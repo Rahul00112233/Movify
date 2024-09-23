@@ -20,8 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 class TVShowViewModel : ViewModel() {
 
@@ -38,6 +36,9 @@ class TVShowViewModel : ViewModel() {
     val trendingMovies : StateFlow<List<Result>> = _trendingMovies
 
     var youtubeKey by mutableStateOf<String?>(null)
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
 
     init {
         fetchPopularMovies()
@@ -59,10 +60,13 @@ class TVShowViewModel : ViewModel() {
                 }
             } catch (e: Exception){
 
+            }finally {
+                _isLoading.value = false
             }
         }
     }
     fun fetchPopularMovies() {
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO){
             try{
                 val response = apiService.getDiscoveredMovies()
@@ -74,10 +78,13 @@ class TVShowViewModel : ViewModel() {
                 }
             } catch (e: Exception){
 
+            }finally {
+                _isLoading.value = false
             }
         }
     }
     fun fetchTrendingMovies(){
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO){
             try {
                 val response = apiService.getTrendingMovies()
@@ -89,11 +96,14 @@ class TVShowViewModel : ViewModel() {
                 }
             } catch (e: Exception){
 
+            }finally {
+                _isLoading.value = false
             }
 
         }
     }
     fun fetchMoviesById(id: Int){
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try{
                 val response = apiService.getMovies(movieId = id)
@@ -116,6 +126,8 @@ class TVShowViewModel : ViewModel() {
                 }
             }catch (e: Exception){
                 Log.e("TVShowViewModel", "Error fetching movies by ID: ${e.message}")
+            }finally {
+                _isLoading.value = false
             }
         }
     }

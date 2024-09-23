@@ -26,7 +26,7 @@ val okHttpClient = OkHttpClient.Builder()
     .build()
 
 interface RetrofitInstance {
-    @GET("search/multi")
+    @GET("search/movie")
     suspend fun getSearchedMovies(
         @Query("language") language: String = "en-US",
         @Query("sort_by") sortBy: String = "popularity.desc",
