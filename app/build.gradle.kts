@@ -101,6 +101,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
 
-
+    dependencies {
+        implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+    }
 
 }

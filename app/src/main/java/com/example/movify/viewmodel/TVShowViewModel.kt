@@ -1,6 +1,7 @@
 package com.example.movify.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -35,6 +36,15 @@ class TVShowViewModel : ViewModel() {
     private val _trendingMovies = MutableStateFlow<List<Result>>(emptyList())
     val trendingMovies : StateFlow<List<Result>> = _trendingMovies
 
+    private val _upcomingMovies = MutableStateFlow<List<Result>>(emptyList())
+    val upcomingMovies : StateFlow<List<Result>> = _upcomingMovies
+
+    private val _topratedMovies = MutableStateFlow<List<Result>>(emptyList())
+    val topratedMovies : StateFlow<List<Result>> = _topratedMovies
+
+    private val _query = mutableStateOf("")
+    val query: State<String> = _query
+
     var youtubeKey by mutableStateOf<String?>(null)
 
     private val _isLoading = MutableStateFlow(false)
@@ -43,28 +53,42 @@ class TVShowViewModel : ViewModel() {
     init {
         fetchPopularMovies()
         fetchTrendingMovies()
+        fetchUpcomingMovies()
+        fetchTopRatedMovies()
     }
-
-
-    fun fetchSearchedMovies(Query:String){
-        viewModelScope.launch(Dispatchers.IO) {
-            try{
-                val response = apiService.getSearchedMovies(query = Query)
-                if(response.isSuccessful){
-                    val movieData = response.body()
-                    movieData?.let {
-                        _tvShowListBySearch.value = response.body()?.results?:emptyList()
-                    }
-                } else{
-                    Log.e("TVShowViewModel", "Error fetching discovered movies: ${response.message()}")
+    fun searchMovies(query: String) {
+        _query.value = query
+        viewModelScope.launch {
+            try {
+                val response = apiService.getSearchedMovies(query = query)
+                if (response.isSuccessful) {
+                    _tvShowListBySearch.value = response.body()?.results ?: emptyList()
                 }
-            } catch (e: Exception){
-
-            }finally {
-                _isLoading.value = false
+            } catch (e: Exception) {
+                Log.e("MovieSearch", "Error fetching movies: ${e.message}")
             }
         }
     }
+
+//    fun fetchSearchedMovies(Query:String){
+//        viewModelScope.launch(Dispatchers.IO) {
+//            try{
+//                val response = apiService.getSearchedMovies(query = Query)
+//                if(response.isSuccessful){
+//                    val movieData = response.body()
+//                    movieData?.let {
+//                        _tvShowListBySearch.value = response.body()?.results?:emptyList()
+//                    }
+//                } else{
+//                    Log.e("TVShowViewModel", "Error fetching discovered movies: ${response.message()}")
+//                }
+//            } catch (e: Exception){
+//
+//            }finally {
+//                _isLoading.value = false
+//            }
+//        }
+//    }
     fun fetchPopularMovies() {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO){
@@ -96,6 +120,46 @@ class TVShowViewModel : ViewModel() {
                 }
             } catch (e: Exception){
 
+            }finally {
+                _isLoading.value = false
+            }
+
+        }
+    }
+    fun fetchUpcomingMovies(){
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO){
+            try {
+                val response = apiService.getUpcomingMovies()
+                if(response.isSuccessful){
+                    val movieData = response.body()
+                    movieData?.let {
+                        _upcomingMovies.value = response.body()?.results?:emptyList()
+                    }
+                    Log.d("Responseit", response.toString())
+                }
+            } catch (e: Exception){
+                Log.d("Responseit", "not fetching data")
+            }finally {
+                _isLoading.value = false
+            }
+
+        }
+    }
+    fun fetchTopRatedMovies(){
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO){
+            try {
+                val response = apiService.getTopRatedMovies()
+                if(response.isSuccessful){
+                    val movieData = response.body()
+                    movieData?.let {
+                        _topratedMovies.value = response.body()?.results?:emptyList()
+                    }
+                    Log.d("Responseit", response.toString())
+                }
+            } catch (e: Exception){
+                Log.d("Responseit", "not fetching data")
             }finally {
                 _isLoading.value = false
             }

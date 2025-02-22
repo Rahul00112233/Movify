@@ -56,6 +56,16 @@ interface RetrofitInstance {
     suspend fun getTrendingMovies(
         @Query("language") language: String = "en-US"
     ): Response<MovieData>
+
+    @GET("movie/upcoming")
+    suspend fun getUpcomingMovies(
+        @Query("language") language: String = "en-US"
+    ): Response<MovieData>
+
+    @GET("movie/top_rated")
+    suspend fun getTopRatedMovies(
+        @Query("language") language: String = "en-US"
+    ): Response<MovieData>
 }
 
 val retrofit = Retrofit.Builder()

@@ -1,206 +1,220 @@
-package com.example.movify.presentation
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.example.movify.R
 import com.example.movify.api.Result
-import com.example.movify.ui.theme.Blue
-import com.example.movify.ui.theme.Inside
 import com.example.movify.viewmodel.TVShowViewModel
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(viewModel: TVShowViewModel, navController: NavHostController) {
-    var query by remember { mutableStateOf(value = "") }
+fun MovieSearchScreen(navController: NavController, viewModel:TVShowViewModel) {
+    var query by remember { mutableStateOf("") }
+    val movies by viewModel.tvShowListBySearch.collectAsState()
+    val trendingMovies by viewModel.trendingMovies.collectAsState()
 
-    val movieSearches by viewModel.tvShowListBySearch.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    val filteredMovies = movies.filter { movie ->
+        !movie.poster_path.isNullOrEmpty()
+    }
 
-    val keyboardController = LocalSoftwareKeyboardController.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(top = 64.dp)
+    ) {
+        Row(modifier = Modifier.padding(start = 24.dp), verticalAlignment = Alignment.CenterVertically){
+            Image(
+                painter = painterResource(R.drawable.movify),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(shape = RoundedCornerShape(15.dp))
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text("Movify", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        }
 
-    Scaffold(
-        topBar = {
-            LargeTopAppBar(
-                title = {
-                    OutlinedTextField(
-                        value = query,
-                        onValueChange = { query = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp),
-                        placeholder = {
-                            Text(text = "Search for movies", color = Color.Gray)
-                        },
-                        shape = RoundedCornerShape(35.dp),
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor = Inside,
-                            unfocusedIndicatorColor = Color.Gray,
-                            focusedLabelColor = Inside
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                viewModel.fetchSearchedMovies(query)
-                                keyboardController?.hide()
-                            }
-                        ),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        )
-                    )
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+            }
+            TextField(
+                value = query,
+                onValueChange = {
+                    query = it
+                    viewModel.searchMovies(it)
                 },
-                navigationIcon = {
-                    IconButton(onClick = {}, colors = IconButtonDefaults.iconButtonColors(
-                        Inside)) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        viewModel.fetchSearchedMovies(query)
-                    }, colors = IconButtonDefaults.iconButtonColors(Inside)) {
-                        Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")
-                    }
-                },
-
+                placeholder = { Text("Search movies...", color = Color.Gray) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.LightGray) },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.DarkGray,
+                    focusedTextColor  = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Black
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp)
             )
         }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        if (query == "") {
+            Text(
+                text = "Trending Movies",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(all = 8.dp)
+            )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(trendingMovies) { movie ->
+                    MovieItem(
+                        movie,
+                        onClick = {
+                            navController.navigate("detail/${movie.id}")
+                            viewModel.fetchMoviesById(movie.id)
+                        }
+                    )
+                }
             }
 
-            if (!isLoading && movieSearches.isNotEmpty()) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxSize()
-                ) {
-                    items(movieSearches) { movieShow ->
-                        MovieSearchCard(movie = movieShow, onClick = {
-                            navController.navigate("detail/${movieShow.id}")
-                            viewModel.fetchMoviesById(movieShow.id)
-                        })
-                    }
+        } else {
+            Text(
+                text = "Top Results",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(all = 8.dp)
+            )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(filteredMovies) { movie ->
+                    MovieItem(
+                        movie,
+                        onClick = {
+                            navController.navigate("detail/${movie.id}")
+                            viewModel.fetchMoviesById(movie.id)
+                        }
+                    )
                 }
-            } else if (!isLoading) {
-                Text(
-                    text = "No results found.",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Gray
-                )
             }
         }
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
-fun MovieSearchCard(movie: Result, onClick: () -> Unit) {
-    val imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}"
-    Card(
-        modifier = Modifier
-            .padding(6.dp)
-            .clickable {
-                onClick()
-            },
-        shape = RoundedCornerShape(12.dp)
+fun MovieItem(movie: Result, modifier: Modifier = Modifier, onClick:()->Unit) {
+    Column(
+        modifier = modifier
+            .width(140.dp)
+            .clickable(onClick = onClick)
+            .padding(8.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.Black),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box {
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = "Movie Poster",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(200.dp),
-                contentScale = ContentScale.Crop
+        // Movie Poster with Async Image Loading
+        Image(
+            painter = rememberAsyncImagePainter(
+                model = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
+                placeholder = painterResource(R.drawable.movify),
+            ),
+            contentDescription = movie.title,
+            modifier = Modifier
+                .height(200.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        // Movie Title
+        movie.title?.let {
+            Text(
+                text = it,
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 8.dp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.4f), Color.Transparent)))
+        }
+
+        // Movie Rating
+        val roundedRating = movie.vote_average?.toDoubleOrNull()?.let { String.format("%.1f", it) } ?: "0.0"
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 4.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = "Rating",
+                tint = Color.Yellow,
+                modifier = Modifier.size(14.dp)
             )
-            Column(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.BottomStart)
-            ) {
-                movie.title?.let {
-                    Text(
-                        text = it,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                movie.release_date?.let {
-                    Text(
-                        text = it,
-                        fontSize = 12.sp,
-                        color = Color.White.copy(alpha = 0.7f)
-                    )
-                }
-            }
+            Text(
+                text = " $roundedRating",
+                color = Color.White,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }

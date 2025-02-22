@@ -17,9 +17,12 @@
         android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
+
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Movify">
+            android:theme="@style/Theme.Movify"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
