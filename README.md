@@ -50,8 +50,6 @@ A modern Android application built with **Kotlin** and **Jetpack Compose**, leve
 ## 📸 Screenshots
 
 Here are some previews of the app in action:
-<img src="(https://github.com/user-attachments/assets/3ae73d36-27ca-4a96-bcf4-90c799ddd4be" alt="Home Screen" width="200" />
-
 ![Image](https://github.com/user-attachments/assets/3ae73d36-27ca-4a96-bcf4-90c799ddd4be)
 ![Image](https://github.com/user-attachments/assets/1b45d596-1063-47cd-ad43-da446d1ef048)
 ![Image](https://github.com/user-attachments/assets/32d81895-b51d-42b0-ac71-ce3c769c95b4)
