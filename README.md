@@ -50,17 +50,17 @@ A modern Android application built with **Kotlin** and **Jetpack Compose**, leve
 ## 📸 Screenshots
 
 Here are some previews of the app in action:
-<img src="https://github.com/user-attachments/assets/3ae73d36-27ca-4a96-bcf4-90c799ddd4be" alt="Home Screen" width="200" />
+<img src="https://github.com/user-attachments/assets/3ae73d36-27ca-4a96-bcf4-90c799ddd4be" alt="Home Screen" width="300" />
 
-<img src="https://github.com/user-attachments/assets/1b45d596-1063-47cd-ad43-da446d1ef048" alt="Movie Details" width="200" />
+<img src="https://github.com/user-attachments/assets/1b45d596-1063-47cd-ad43-da446d1ef048" alt="Movie Details" width="300" />
 
-<img src="https://github.com/user-attachments/assets/32d81895-b51d-42b0-ac71-ce3c769c95b4" alt="Another Screenshot" width="200" />
+<img src="https://github.com/user-attachments/assets/32d81895-b51d-42b0-ac71-ce3c769c95b4" alt="Another Screenshot" width="300" />
 
-<img src="https://github.com/user-attachments/assets/377bc89d-8c09-456d-8716-d694234b6f84" alt="Another Screenshot" width="200" />
+<img src="https://github.com/user-attachments/assets/377bc89d-8c09-456d-8716-d694234b6f84" alt="Another Screenshot" width="300" />
 
-<img src="https://github.com/user-attachments/assets/b09c3f6c-94fc-47bd-a033-c567b1c15b5c" alt="Another Screenshot" width="200" />
+<img src="https://github.com/user-attachments/assets/b09c3f6c-94fc-47bd-a033-c567b1c15b5c" alt="Another Screenshot" width="300" />
 
-<img src="https://github.com/user-attachments/assets/9345ddbf-17f6-4680-b53c-62af61e1f75a" alt="Another Screenshot" width="200" />
+<img src="https://github.com/user-attachments/assets/9345ddbf-17f6-4680-b53c-62af61e1f75a" alt="Another Screenshot" width="300" />
 
 ## 📜 License
 
