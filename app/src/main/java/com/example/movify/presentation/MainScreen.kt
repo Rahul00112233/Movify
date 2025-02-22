@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -55,7 +54,6 @@ fun MainScreen(viewModel: TVShowViewModel, navController: NavController) {
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        // Search Bar
         Spacer(modifier = Modifier.height(64.dp))
         Row(modifier = Modifier.padding(start = 24.dp), verticalAlignment = Alignment.CenterVertically){
             Image(
@@ -73,7 +71,6 @@ fun MainScreen(viewModel: TVShowViewModel, navController: NavController) {
             navController = navController
         )
 
-        // Scrollable Content
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 16.dp)

@@ -1,10 +1,7 @@
 package com.example.movify.presentation
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -101,7 +97,7 @@ fun StartScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
                     .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F80E0)) // Hotstar blue color
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F80E0))
             ) {
                 Text(
                     text = "Get Started",
